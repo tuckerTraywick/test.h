@@ -96,7 +96,7 @@ void endTesting(void) {
 }
 
 __attribute__((unused))
-void runSuiteImpl(TestFunction testFunction, const char *testName, const char *file, int line, const char *function) {
+bool runSuiteImpl(TestFunction testFunction, const char *testName, const char *file, int line, const char *function) {
     pid_t pid = fork();
     if (pid == 0) {
         // We are in the child process, run the test and exit.
@@ -119,20 +119,23 @@ void runSuiteImpl(TestFunction testFunction, const char *testName, const char *f
     // We are in the parent process, wait for the child to finish and print an error.
     int childStatus = 0;
     waitpid(pid, &childStatus, 0);
-    if (suiteOut != NULL && (WIFEXITED(childStatus) && childStatus != EXIT_SUCCESS || WIFSIGNALED(childStatus))) {
+    if (suiteOut != NULL && ((WIFEXITED(childStatus) && childStatus != EXIT_SUCCESS) || WIFSIGNALED(childStatus))) {
         fprintf(suiteOut, "%s:%d:%s:\n    Terminated abnormally in suite '%s'\n\n", file, line, function, testName);
+        return false;
     }
-    return;
+    return true;
 }
 
 __attribute__((unused))
-static void testImpl(bool condition, const char *expression, const char *file, int line, const char *function) {
+static bool testImpl(bool condition, const char *expression, const char *file, int line, const char *function) {
     ++*testsRun;
     if (condition) {
         ++*testsPassed;
+        return true;
     } else if (testOut != NULL) {
         fprintf(testOut, "%s:%d:%s\n    Failed test '%s'\n\n", file, line, function, expression);
     }
+    return false;
 }
 
 __attribute__((unused))

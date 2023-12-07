@@ -8,8 +8,8 @@ static int f(int a, int b) {
 
 static void testF() {
     test(f(1, 2) == 3);
-    test(f(1, 2) == 4);
     assert(f(1, 2) == 2);
+    test(f(3, 4) == 5); // This statement is never reached.
 }
 
 int main(void) {
