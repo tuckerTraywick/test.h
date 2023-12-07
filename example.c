@@ -1,3 +1,4 @@
+#include <stdio.h> // stdout
 #define TEST_IMPL
 #include "test.h"
 
@@ -6,12 +7,14 @@ static int f(int a, int b) {
 }
 
 static void testF() {
-    assert(f(1, 2) == 2);
     test(f(1, 2) == 3);
+    test(f(1, 2) == 4);
+    assert(f(1, 2) == 2);
 }
 
 int main(void) {
+    suiteOut = testOut = assertOut = resultsOut = stdout;
     beginTesting();
-        runTest(testF);
+        runSuite(testF);
     endTesting();
 }
