@@ -1,15 +1,13 @@
 CC := gcc
-CFLAGS := -std=c17 -O -g -Wall -Wextra -Wpedantic
+CFLAGS := -std=gnu17 -O -g -Wall -Wextra -Wpedantic
 
 default: binary
 
 binary: example.o
 	@$(CC) $(CFLAGs) -I./ example.c -o $@
 
-example.o:
+example.o: example.c test.h
 	@$(CC) $(CFLAGS) -c example.c -o $@
-
-example.c: test.h
 
 test.h:
 
