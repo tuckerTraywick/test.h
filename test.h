@@ -2,7 +2,6 @@
 #ifndef TEST_H
 #define TEST_H
 
-#include <stddef.h> // size_t
 #include <stdio.h> // FILE
 
 // Runs `testFunction` in a child process and reports if it crashes or exits abnormally.
@@ -13,15 +12,14 @@
 void beginTesting(void);
 void endTesting(void);
 
-size_t *suitesRun;
-size_t *suitesPassed;
+long *suitesRun;
+long *suitesPassed;
 
-size_t *testsRun;
-size_t *testsPassed;
+long *testsRun;
+long *testsPassed;
 
-size_t *assertionsRun;
-size_t *assertionsPassed;
-
+long *assertionsRun;
+long *assertionsPassed;
 
 // These variables need to be set by code that uses this header. Leave unset for no output.
 FILE *suiteOut;
@@ -36,7 +34,6 @@ FILE *resultsOut;
 #ifdef TEST_IMPL
 #undef TEST_IMPL
 
-#include <stddef.h> // size_t
 #include <stdbool.h> // bool
 #include <stdlib.h> // exit()
 #include <stdio.h> // FILE, fprintf()
@@ -50,7 +47,7 @@ FILE *resultsOut;
 typedef void (*TestFunction)(void);
 
 // Points to the shared memory that holds all of the counters.
-size_t *testCounters;
+long *testCounters;
 
 __attribute__((unused))
 void beginTesting(void) {
@@ -101,10 +98,10 @@ bool runSuiteImpl(TestFunction testFunction, const char *testName, const char *f
     if (pid == 0) {
         // We are in the child process, run the test and exit.
         ++*suitesRun;
-        size_t previousTestsRun = *testsRun;
-        size_t previousTestsPassed = *testsPassed;
-        size_t previousAssertionsRun = *assertionsRun;
-        size_t previousAssertionsPassed = *assertionsPassed;
+        long previousTestsRun = *testsRun;
+        long previousTestsPassed = *testsPassed;
+        long previousAssertionsRun = *assertionsRun;
+        long previousAssertionsPassed = *assertionsPassed;
 
         testFunction();
         if (*testsPassed - previousTestsPassed == *testsRun - previousTestsRun
